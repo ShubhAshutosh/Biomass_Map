@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentView = "india";
   let plantData = {};
   let currentChart = null;
+  
 
   const states = [
     "Andhra Pradesh",
@@ -70,11 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
     stateButtons.push(stateButton);
     stateListContainer.appendChild(stateButton);
   });
-
+  
   function showStateDetails(state, data) {
     const modal = document.getElementById("biomass-modal") || createModal();
-
-    // Format the state data into an HTML table
     // Format the state data into an HTML table
     const tableRows = data
       .map(
@@ -371,6 +370,10 @@ document.addEventListener("DOMContentLoaded", () => {
       currentChart.destroy();
     }
 
+    const mapData = geoJson;
+
+    
+
     // Aggregate plant data by state
     const plantPoints = Object.values(plantData)
       .flat()
@@ -447,6 +450,10 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .filter((point) => point !== null);
 
+    const stateData = geoJson.features.map((feature, i) => ({
+    ...feature,
+    value: 1, // or a plant count, or 0 for default
+    }));
     currentChart = Highcharts.mapChart("map-container", {
       chart: {
         map: geoJson,
@@ -464,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
         text: "India Map With Plant and Biomass Locations",
       },
       subtitle: {
-        text: "Red dots: Plants | Green dots: Biomass data <br><i>Click on a state name to open its map and see plants & biomass data.</i> <br><br> <small>Use the buttons below to toggle plant and biomass layers. You can view only plants, only biomass, both, or neither by selecting/deselecting them.</small>",
+        text: "Red dots: Plants | Green dots: Biomass data <br><i>Click on a state name to open its map and see plants & biomass data.</i> <br><br> <large>Use the buttons below to toggle plant and biomass layers. You can view only plants, only biomass, both, or neither by selecting/deselecting them.</large>",
         useHTML: true, // Allows HTML formatting
       },
       mapNavigation: {
@@ -508,16 +515,47 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       series: [
         {
-          data: geoJson.features,
+          type: "map", // 🆕 Ensures polygon interactivity for full area!
           name: "States",
+          mapData: geoJson,
+          joinBy: ['st_nm', 'name'], // join on state name (adjust as needed)
+          //data: geoJson.features,
+          data: geoJson.features.map(f => ({
+          name: f.properties.st_nm,
+          value: 1 // or any other value
+        })),
           borderColor: "#000",
           borderWidth: 2,
+          color: "#E0E0E0", // default fill color
+          cursor: "pointer", // 🆕 Shows pointer when hovering over the state area
+          // NEW: Add states for hover effects
+          //states: {
+          plotOptions: {
+            hover: {
+              color: '#B4D8FF', // A color for highlighting
+              borderColor: '#333',
+              borderWidth: 3,
+            },
+            select: {
+              color: '#A0C9E6' //Color when selected
+            }
+          },
+          // NEW: Ensure interaction is based on the shape's area
+          trackByArea: true,
           dataLabels: {
             enabled: true,
             format: "{point.properties.st_nm}",
             style: {
               fontWeight: "bold",
             },
+          },
+          states: {
+          hover: {
+            color: "#B4D8FF" // hover color
+            },
+          select: {
+            color: "#A0C9E6" // selected color
+            }
           },
           point: {
             events: {
@@ -527,26 +565,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (!stateName) return; // Prevents errors if no state name is found
 
-                // Ensure clicking anywhere on the state (not just text) opens its map
-                if (this.series.name === "States") {
-                  if (!plants || plants.length === 0) {
-                    alert("No plant data available for " + stateName);
-                    return;
-                  }
-
-                  const stateFile = stateName.toLowerCase().replace(/\s+/g, "");
-                  fetch(`/static/geojson/states/${stateFile}.json`)
-                    .then((response) => response.json())
-                    .then((stateData) => {
-                      currentView = stateName;
-                      createStateMap(stateData, plants, stateName);
-                      createBackButton();
-                    })
-                    .catch((error) => {
-                      console.error("Error loading state data:", error);
-                      alert("Error loading map for " + stateName);
-                    });
+                // Remove the condition that checks if series name is "States"
+                // This allows clicking anywhere on the state area to work
+                if (!plants || plants.length === 0) {
+                  alert("No plant data available for " + stateName);
+                  return;
                 }
+
+                const stateFile = stateName.toLowerCase().replace(/\s+/g, "");
+                fetch(`/static/geojson/states/${stateFile}.json`)
+                  .then((response) => response.json())
+                  .then((stateData) => {
+                    currentView = stateName;
+                    createStateMap(stateData, plants, stateName);
+                    createBackButton();
+                  })
+                  .catch((error) => {
+                    console.error("Error loading state data:", error);
+                    alert("Error loading map for " + stateName);
+                  });
               },
             },
           },
@@ -785,17 +822,32 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       series: [
         {
+          type: "map",
           name: "Districts",
-          data: districtsData,
+          joinBy: ['district', 'name'],
+          data: stateData.features.map(feature => ({
+            name: feature.properties.district,
+            value: 1 // or another value
+            })),
           borderColor: "#999",
-          states: {
-            hover: {
-              color: "#90EE90",
-            },
-          },
+          borderWidth: 2,
+          color: "#E0E0E0",
+          cursor: "pointer",
+          trackByArea: true,
           dataLabels: {
             enabled: true,
             format: "{point.properties.district}",
+            style: {
+              fontWeight: "bold",
+            },
+          },
+          states: {
+            hover: {
+              color: "#B4D8FF" // hover color
+            },
+            select: {
+              color: "#A0C9E6" // selected color
+            }
           },
           point: {
             events: {
@@ -1168,18 +1220,20 @@ document.addEventListener("DOMContentLoaded", () => {
     contentWrapper.onclick = (event) => {
       event.stopPropagation();
     };
-
-    document.body.appendChild(modal);
-
+    // Append modal to the fullscreen element if in fullscreen, else to body
+    const fullscreenContainer = document.fullscreenElement || document.body;
+    fullscreenContainer.appendChild(modal);
     // Add fullscreen change event listener
     document.addEventListener("fullscreenchange", () => {
-      if (document.fullscreenElement) {
-        modal.style.zIndex = "9999999";
-        contentWrapper.style.zIndex = "10000000";
-        closeBtn.style.zIndex = "10000001";
+      const modal = document.getElementById("plantModal");
+      if (modal) {
+        if (document.fullscreenElement) {
+          document.fullscreenElement.appendChild(modal);
+        } else {
+          document.body.appendChild(modal);
+        }
       }
     });
-
     return modal;
   }
 
@@ -1200,9 +1254,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const viewAllBtn = document.querySelector(".view-all-button");
       if (viewAllBtn) viewAllBtn.remove();
     };
-    document.body.insertBefore(
-      button,
-      document.getElementById("map-container")
-    );
+    // Append to fullscreen element if in fullscreen, else to body
+    const parent = document.fullscreenElement || document.getElementById("map-container") || document.body;
+    parent.appendChild(button);
+    document.addEventListener("fullscreenchange", () => {
+    const button = document.querySelector(".back-button");
+    if (button) {
+      const parent = document.fullscreenElement || document.getElementById("map-container") || document.body;
+      parent.appendChild(button);
+    }
+  });
   }
 });

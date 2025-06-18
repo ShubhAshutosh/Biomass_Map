@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DRI Plants in India</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Highcharts and Dependencies -->
     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
     <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
-
 <body>
-    <div id="map-container" class="map-container"></div>
-    <!-- <h1 id="bioMassDetails" style="text-align: center;">Details of Bio Mass as per state</h1> -->
 
-    <!-- Scrollable List Container for state buttons -->
-    <div id="state-list-container" class="state-list-container">
-        <!-- Buttons will be dynamically added here -->
+    <!-- Buttons + Map -->
+    <div style="margin-bottom: 10px;">
+        <button id="toggle-air">Show Air Routes</button>
+        <button id="toggle-rail">Show Rail Routes</button>
+        <button id="toggle-road">Show Road Routes</button>
     </div>
 
-    <!-- Container to display the biomass details of the selected state -->
-    <div id="biomass-details-container" style="text-align: center; margin-top: 20px;"></div>
+    <div id="map-container" style="height: 600px; width: 100%;"></div>
 
+    <!-- Additional Containers -->
+    <div id="legend-container" class="map-container"></div>
+    <div id="state-list-container" class="state-list-container"></div>
+
+    <!-- Biomass Info -->
+    <div id="biomass-details-container" role="region" aria-label="Biomass Details"
+         style="text-align: center; margin-top: 20px;">
+    </div>
+
+    <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 </body>
-
 </html>
