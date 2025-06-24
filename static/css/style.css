@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     margin: 0;
     padding: 0;
@@ -6,10 +7,21 @@ body {
     line-height: 1.6;
     background-color: #f5f5f5;
     color: #333;
+=======
+/* Base Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #fff;
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
 }
 
 #map-container {
     width: 100%;
+<<<<<<< HEAD
     height: 100vh;
     margin: 0;
     position: relative;
@@ -133,6 +145,63 @@ body {
 }
 
 .modal {
+=======
+    height: 95vh;
+    margin: 0 auto;
+}
+
+/* Responsive Map Height */
+@media (max-width: 768px) {
+    #map-container {
+        height: 60vh;
+    }
+}
+
+/* Route Buttons */
+.route-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.route-buttons button {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.route-buttons button:hover {
+    background-color: #0056b3;
+}
+
+/* Highcharts Styles */
+path.highcharts-point {
+    transition: fill 0.3s ease-in-out, stroke 0.3s ease-in-out;
+}
+
+.highcharts-point-highlighted {
+    fill: #bada55 !important;
+    stroke: #666 !important;
+}
+
+.highcharts-legend-item {
+    cursor: pointer;
+}
+.highcharts-legend-item text {
+    font-weight: bold !important;
+}
+
+/* Modal & Table */
+.modal, #biomass-modal {
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
     display: none;
     position: fixed;
     z-index: 10000;
@@ -146,7 +215,12 @@ body {
     box-sizing: border-box;
 }
 
+<<<<<<< HEAD
 .modal-content {
+=======
+.modal-content, 
+#biomass-modal .modal-content {
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
     background-color: #ffffff;
     margin: 5vh auto;
     padding: 30px;
@@ -164,6 +238,10 @@ body {
     to { transform: translateY(0); opacity: 1; }
 }
 
+<<<<<<< HEAD
+=======
+/* Table */
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
 table {
     width: 100%;
     border-collapse: collapse;
@@ -179,7 +257,11 @@ th, td {
 }
 
 th {
+<<<<<<< HEAD
     background-color: #1a73e8;
+=======
+    background-color: #007BFF;
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
     color: white;
     text-align: center;
     font-weight: bold;
@@ -195,6 +277,7 @@ tr:hover {
     background-color: #f9f9f9;
 }
 
+<<<<<<< HEAD
 .close-tutorial {
     float: right;
     font-size: 28px;
@@ -219,4 +302,119 @@ tr:hover {
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+=======
+@media (max-width: 600px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Close Button */
+.close {
+    position: fixed;
+    right: calc(5% + 10px);
+    top: 6vh;
+    background: white;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10001;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.close:hover {
+    color: #000;
+    background-color: #f0f0f0;
+}
+
+/* State List */
+.state-list-container {
+    max-height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 350px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.state-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 8px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.state-button:hover {
+    background-color: #f0f0f0;
+}
+.state-button span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+.view-details-btn {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.view-details-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Biomass Section */
+#biomass-details-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#bioMassDetails {
+    font-size: 24px;
+    color: #333;
+}
+
+/* Modal Table Tweaks for Mobile */
+@media (max-width: 768px) {
+    #biomass-modal .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    #biomass-modal table {
+        font-size: 14px;
+    }
+    #biomass-modal table th, #biomass-modal table td {
+        padding: 10px;
+    }
+}
+
+/* Modal Fullscreen Tweaks */
+@media all and (display-mode: fullscreen) {
+    .modal, #biomass-modal { z-index: 999999; }
+    .modal-content, #biomass-modal .modal-content {
+        margin: 2vh auto;
+        max-height: 95vh;
+    }
+    .close { top: 3vh; }
+>>>>>>> be06d3af8e87eadb2e072559bc02f35191eb4c16
 }
