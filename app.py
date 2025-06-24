@@ -29,7 +29,7 @@ def load_plant_data():
             state = str(state).strip()
             if state:
                 plants_by_state[state] = [
-                    {k.strip(): str(v).strip() if isinstance(v, str) else v
+                    {k.strip(): str(v).strip() if isinstance(v, str) else v 
                      for k, v in row.items()}
                     for _, row in group.iterrows()
                 ]
@@ -219,7 +219,11 @@ def get_distance():
 def serve_geojson(filename):
     return send_from_directory('static/geojson', filename)
 
-PORT = int(os.environ.get("PORT", 10000))
+# if __name__ == '__main__':
+#     port = int(os.environ.get("PORT", 10000))  # Default to port 5000 if PORT is not set
+#     app.run(host="0.0.0.0", port=PORT, debug=False)
+
+PORT = int(os.environ.get("PORT", 10000))  # Use Render's assigned port
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT, debug=False)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
