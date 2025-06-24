@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DRI Plants in India</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+
+    <div class="controls-container">
+        <div id="distance-calculator" class="distance-calculator">
+            <button id="distance-btn" class="button">
+                <i class="material-icons">directions</i> Find distance between plants
+            </button>
+            <div id="distance-inputs" style="display: none;">
+                <div class="autocomplete">
+                    <i class="material-icons">location_on</i>
+                    <input type="text" id="plant1-input" placeholder="Enter plant name">
+                    <ul id="plant1-options" class="autocomplete-options"></ul>
+                </div>
+                <div class="autocomplete">
+                    <i class="material-icons">location_on</i>
+                    <input type="text" id="plant2-input" placeholder="Enter plant name">
+                    <ul id="plant2-options" class="autocomplete-options"></ul>
+                </div>
+                <button id="calculate-distance-btn" class="button primary">
+                    <i class="material-icons">check</i> OK
+                </button>
+                <div id="distance-result" class="distance-result"></div>
+            </div>
+        </div>
+        <button id="tutorial-btn" class="button help">
+            <i class="material-icons">help_outline</i> How to Use
+        </button>
+    </div>
+
+    <div id="map-container"></div>
+
+    <div id="legend-container" class="map-container"></div>
+    <div id="state-list-container" class="state-list-container"></div>
+
+    <div id="biomass-details-container" role="region" aria-label="Biomass Details"></div>
+
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-tutorial">&times;</span>
+            <h2>How to Use This Web App</h2>
+            <p><strong>Exploring the Map:</strong></p>
+            <ul>
+                <li>Click on a state to zoom in and see its districts.</li>
+                <li>When viewing a state, click on a district to see details about the plants in that district.</li>
+                <li>Hover over a state or district to highlight it.</li>
+            </ul>
+            <p><strong>Finding the Distance Between Plants:</strong></p>
+            <ol>
+                <li>Click the "Find distance between plants" button on the left.</li>
+                <li>Start typing the name of the first plant in the top bar. A dropdown list will appear with matching plant names. Select the desired plant.</li>
+                <li>Do the same for the second plant in the bottom bar.</li>
+                <li>Click the "OK" button to see the distance between them.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
