@@ -29,7 +29,7 @@
         </div>
 
         <div class="sidebar-content">
-            <!-- Sidebar now only contains these two sections -->
+            <!-- Distance Calculator Section -->
             <div id="distance-calculator" class="sidebar-section">
                 <h4><i class="material-icons">directions</i> Distance Calculator</h4>
                 <button id="distance-btn" class="sidebar-button">
@@ -57,6 +57,7 @@
                 </div>
             </div>
 
+            <!-- Map Layers Control Section -->
             <div class="sidebar-section">
                 <h4><i class="material-icons">layers</i> Map Layers</h4>
                 <div class="toggle-controls">
@@ -82,6 +83,14 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- How to Use Section - MOVED BACK TO SIDEBAR -->
+            <div class="sidebar-section">
+                <button id="tutorial-btn" class="sidebar-button help">
+                    <i class="material-icons">help_outline</i> 
+                    <span>How to Use</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -93,37 +102,29 @@
             <span>Options</span>
         </button>
 
-        <!-- Container for overlays on the left side of the map -->
-        <div id="left-map-overlays">
+        <!-- Map Container -->
+        <div id="map-container"></div>
+
+        <!-- NEW: Container for overlays on the bottom-right of the map -->
+        <div id="bottom-right-overlays">
             <!-- Data at a Glance Box -->
             <div id="data-glance-overlay" class="map-overlay-box">
                 <!-- Content injected by JavaScript -->
             </div>
-            <!-- How to Use Button -->
-            <div id="how-to-use-overlay" class="map-overlay-box">
-                 <button id="tutorial-btn" class="map-overlay-button">
-                    <i class="material-icons">help_outline</i> 
-                    <span>How to Use</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Map Container -->
-        <div id="map-container"></div>
-
-        <!-- Map Legend Overlay -->
-        <div id="map-legend-overlay" class="map-overlay-box">
-            <h4><i class="material-icons">info_outline</i> Map Legend</h4>
-            <div class="legend-item">
-                <div class="legend-color red"></div>
-                <span>Sponge Iron Plants</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color green"></div>
-                <span>Biomass Availability</span>
-            </div>
-            <div class="legend-note">
-                Click on states/districts for detailed information
+            <!-- Map Legend Overlay -->
+            <div id="map-legend-overlay" class="map-overlay-box">
+                <h4><i class="material-icons">info_outline</i> Map Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-color red"></div>
+                    <span>Sponge Iron Plants</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color green"></div>
+                    <span>Biomass Availability</span>
+                </div>
+                <div class="legend-note">
+                    Click on states/districts for detailed information
+                </div>
             </div>
         </div>
 

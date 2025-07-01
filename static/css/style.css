@@ -143,6 +143,19 @@ body {
     background: rgba(24, 90, 188, 0.9);
 }
 
+.sidebar-button.help {
+    background: rgba(52, 168, 83, 0.8);
+    border-color: rgba(52, 168, 83, 0.9);
+}
+
+.sidebar-button.help:hover {
+    background: rgba(44, 142, 67, 0.9);
+}
+
+.sidebar-button i {
+    font-size: 18px;
+}
+
 /* Toggle Controls */
 .toggle-controls {
     display: flex;
@@ -609,61 +622,16 @@ tr:hover {
     font-size: 11px;
 }
 
-/* Positioning for legend on bottom right */
-#map-legend-overlay {
+/* Positioning for bottom-right overlays */
+#bottom-right-overlays {
     position: absolute;
     bottom: 20px;
-    right: 20px;
-    z-index: 998;
-}
-
-/* Positioning and styling for left-side overlays */
-#left-map-overlays {
-    position: absolute;
-    top: 200px;
     right: 20px;
     z-index: 998;
     display: flex;
     flex-direction: column;
     gap: 15px;
     max-width: 250px;
-}
-
-#how-to-use-overlay {
-    /* This rule now inherits from .map-overlay-box for consistent styling */
-    padding: 0;
-    position: relative;    
-    bottom: 300px;
-    right: 0px;
-     /* A little less padding for a box with just a button */
-}
-
-/* Button style for map overlays - UPDATED SIZE */
-.map-overlay-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 12px; /* <-- Reduced padding */
-    background: #5cb85c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px; /* <-- Reduced font size */
-    font-weight: 500;
-    width: 100%;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.map-overlay-button:hover {
-    background: #4cae4c;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.map-overlay-button i {
-    font-size: 16px; /* <-- Reduced icon size */
 }
 
 
@@ -690,7 +658,7 @@ tr:hover {
         display: none;
     }
     
-    #map-legend-overlay, #left-map-overlays {
+    #bottom-right-overlays {
         display: none; /* Hide all overlays on mobile for a cleaner view */
     }
 }

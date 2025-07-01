@@ -917,7 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
           joinBy: ["district", "name"],
           data: stateData.features.map(f => ({
             name: f.properties.district.trim(),
-            value: 1
+            color: '#e0e0e0' // Set neutral grey color for districts
           })),
           borderColor: "#999",
           borderWidth: 1,
