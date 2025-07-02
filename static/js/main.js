@@ -15,6 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainContent = document.getElementById("main-content");
   const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
   const showSidebarBtn = document.getElementById("show-sidebar-btn");
+  const biomassDetailsBtn = document.getElementById("biomass-details-btn");
+
+  biomassDetailsBtn.addEventListener("click", () => {
+    showAllStatesBiomassData();
+  });
 
   sidebarToggle.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
@@ -537,6 +542,13 @@ document.addEventListener("DOMContentLoaded", () => {
       currentChart.destroy();
     }
 
+    // --- MODIFICATION: Show the Data at a Glance box on India view ---
+    const dataGlanceBox = document.getElementById('data-glance-overlay');
+    if (dataGlanceBox) {
+        dataGlanceBox.style.display = 'block';
+    }
+    // --- END MODIFICATION ---
+
     const plantPoints = Object.values(plantData)
       .flat()
       .map((plant) => {
@@ -627,13 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
             menuItems: [
               "viewFullscreen",
               "printChart",
-              "separator",
-              {
-                text: "Biomass Details of State",
-                onclick: function () {
-                  showAllStatesBiomassData();
-                },
-              },
+              "separator"
             ],
           },
         },
@@ -769,6 +775,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createStateMap(stateData, plants, stateName) {
+    // --- MODIFICATION: Hide the Data at a Glance box on state view ---
+    const dataGlanceBox = document.getElementById('data-glance-overlay');
+    if (dataGlanceBox) {
+        dataGlanceBox.style.display = 'none';
+    }
+    // --- END MODIFICATION ---
+
     const bioMassDetailsHeader = document.getElementById("bioMassDetails");
     if (bioMassDetailsHeader) {
       bioMassDetailsHeader.style.display = "none";
@@ -1122,7 +1135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               <h4>Surplus Biomass (Kilo tonnes)</h4>
                               <table class="biomass-table">
                                   ${Object.entries(
-                                    biomassData.biomass.surplus_biomass
+                                    biomassData.biomass.surplus__biomass
                                   )
                                     .map(
                                       ([key, value]) => `
