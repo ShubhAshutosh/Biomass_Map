@@ -24,6 +24,13 @@
         </div>
 
         <div class="sidebar-content">
+            <div class="sidebar-section">
+                <button id="tutorial-btn" class="sidebar-button help">
+                    <i class="material-icons">help_outline</i> 
+                    <span>How to Use</span>
+                </button>
+            </div>
+
             <div id="distance-calculator" class="sidebar-section">
                 <h4><i class="material-icons">directions</i> Distance Calculator</h4>
                 <button id="distance-btn" class="sidebar-button">
@@ -82,12 +89,9 @@
                     <i class="material-icons">grass</i> 
                     <span>Biomass Details of State</span>
                 </button>
-            </div>
-
-            <div class="sidebar-section">
-                <button id="tutorial-btn" class="sidebar-button help">
-                    <i class="material-icons">help_outline</i> 
-                    <span>How to Use</span>
+                 <button id="district-biomass-btn" class="sidebar-button" disabled>
+                    <i class="material-icons">location_on</i> 
+                    <span>Biomass Details of District</span>
                 </button>
             </div>
         </div>
@@ -165,7 +169,7 @@
                 <h3>📊 Accessing Biomass Data</h3>
                 <ul>
                     <li>Click the <strong>"Biomass Details of State"</strong> button in the sidebar to see a list of all states.</li>
-                    <li>From there, you can view comprehensive biomass data for any state.</li>
+                    <li>When viewing a state map, click the <strong>"Biomass Details of District"</strong> button to see a list of districts.</li>
                     <li>You can also click directly on green dots or districts to see local biomass information</li>
                 </ul>
             </div>
@@ -174,6 +178,12 @@
                 <strong>💡 Pro Tip:</strong> For the best experience, start by exploring the India map, then click on states of interest to see detailed district-level information.
             </div>
         </div>
+    </div>
+    
+    <div id="details-modal-container" class="details-modal-container">
+        <div id="plant-details-modal" class="side-modal"></div>
+        <div id="biomass-details-modal" class="side-modal"></div>
+        <button id="close-details-modals" class="close-details-btn">&times;</button>
     </div>
 
     <script src="/static/js/main.js"></script>

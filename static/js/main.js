@@ -16,10 +16,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
   const showSidebarBtn = document.getElementById("show-sidebar-btn");
   const biomassDetailsBtn = document.getElementById("biomass-details-btn");
+  const districtBiomassBtn = document.getElementById("district-biomass-btn"); // Get the button
+
+  // --- NEW: Side-by-Side Modal Elements ---
+  const detailsModalContainer = document.getElementById("details-modal-container");
+  const plantDetailsModal = document.getElementById("plant-details-modal");
+  const biomassDetailsModal = document.getElementById("biomass-details-modal");
+  const closeDetailsModalsBtn = document.getElementById("close-details-modals");
+
+  closeDetailsModalsBtn.addEventListener('click', () => {
+      detailsModalContainer.style.display = 'none';
+  });
+  // Close modals if backdrop is clicked
+  detailsModalContainer.addEventListener('click', (e) => {
+      if (e.target === detailsModalContainer) {
+          detailsModalContainer.style.display = 'none';
+      }
+  });
+  // --- END NEW ---
+
 
   biomassDetailsBtn.addEventListener("click", () => {
     showAllStatesBiomassData();
   });
+
+  // --- NEW: Event listener for the district biomass button ---
+  districtBiomassBtn.addEventListener("click", () => {
+    // Only works if the button is not disabled (i.e., when viewing Odisha)
+    if (!districtBiomassBtn.disabled) {
+        showOdishaDistrictBiomassList();
+    }
+  });
+  // --- END NEW ---
 
   sidebarToggle.addEventListener("click", () => {
     sidebar.classList.toggle("collapsed");
@@ -394,6 +422,110 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
   }
+  
+  // --- NEW: Function to show list of Odisha districts with biomass data ---
+  function showOdishaDistrictBiomassList() {
+    fetch('/api/biomass/odisha')
+        .then(response => {
+            if (!response.ok) throw new Error('Could not fetch Odisha biomass data.');
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const modal = document.createElement("div");
+            modal.id = "district-biomass-list-modal";
+            modal.className = "modal";
+            modal.style.display = "block";
+            modal.style.zIndex = "1000000";
+
+            const modalContent = document.createElement("div");
+            modalContent.className = "modal-content";
+            modalContent.style.maxWidth = "600px";
+            modalContent.style.padding = "20px";
+            modalContent.style.margin = "50px auto";
+            modalContent.style.backgroundColor = "#fff";
+            modalContent.style.borderRadius = "8px";
+            modalContent.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+            const header = document.createElement("div");
+            header.style.display = "flex";
+            header.style.justifyContent = "space-between";
+            header.style.alignItems = "center";
+            header.style.marginBottom = "20px";
+
+            const title = document.createElement("h3");
+            title.textContent = "Biomass Details by District (Odisha)";
+            title.style.margin = "0";
+
+            const closeBtn = document.createElement("span");
+            closeBtn.innerHTML = "&times;";
+            closeBtn.style.fontSize = "24px";
+            closeBtn.style.cursor = "pointer";
+            closeBtn.style.fontWeight = "bold";
+            closeBtn.onclick = () => modal.remove();
+
+            header.appendChild(title);
+            header.appendChild(closeBtn);
+            modalContent.appendChild(header);
+
+            const districtList = document.createElement("div");
+            districtList.style.maxHeight = "500px";
+            districtList.style.overflowY = "auto";
+
+            data.forEach(item => {
+                const district = item.district;
+                const districtButton = document.createElement("div");
+                districtButton.className = "state-biomass-button";
+                districtButton.style.display = "flex";
+                districtButton.style.justifyContent = "space-between";
+                districtButton.style.alignItems = "center";
+                districtButton.style.padding = "10px";
+                districtButton.style.margin = "5px 0";
+                districtButton.style.borderBottom = "1px solid #eee";
+
+                const districtName = document.createElement("span");
+                districtName.textContent = district;
+
+                const viewBtn = document.createElement("button");
+                viewBtn.textContent = "View Details";
+                viewBtn.style.padding = "5px 10px";
+                viewBtn.style.backgroundColor = "#4CAF50";
+                viewBtn.style.color = "white";
+                viewBtn.style.border = "none";
+                viewBtn.style.borderRadius = "4px";
+                viewBtn.style.cursor = "pointer";
+
+                viewBtn.onclick = () => {
+                    modal.remove(); 
+                    const plantsInDistrict = (plantData["Odisha"] || []).filter(p => (p["City/ District"] || "").toLowerCase() === district.toLowerCase());
+                    showDistrictDetails(district, plantsInDistrict);
+                };
+
+                districtButton.appendChild(districtName);
+                districtButton.appendChild(viewBtn);
+                districtList.appendChild(districtButton);
+            });
+
+            modalContent.appendChild(districtList);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            modal.onclick = (event) => {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            };
+        })
+        .catch(error => {
+            console.error("Error fetching Odisha districts for list:", error);
+            alert("Could not load district list. Please try again.");
+        });
+  }
+  // --- END NEW ---
 
   function toggleBiomassContainer(show) {
     const stateListContainer = document.getElementById("state-list-container");
@@ -491,6 +623,10 @@ document.addEventListener("DOMContentLoaded", () => {
       bioMassDetailsHeader.style.display = "none"; 
     }
     toggleBiomassContainer(false); 
+
+    // --- MODIFICATION: Disable district button on India map ---
+    districtBiomassBtn.disabled = true;
+    // --- END MODIFICATION ---
 
     fetch("/static/geojson/india.json")
       .then((response) => response.json())
@@ -805,6 +941,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     toggleBiomassContainer(false);
+    
+    // --- MODIFICATION: Enable/disable district button based on state ---
+    if (stateName === "Odisha") {
+        districtBiomassBtn.disabled = false;
+    } else {
+        districtBiomassBtn.disabled = true;
+    }
+    // --- END MODIFICATION ---
 
     const normalizeDistrictName = (name) => {
       if (!name) return "";
@@ -1026,170 +1170,101 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  function showDistrictDetails(district, plants, isAllPlants = false) {
-    const modal = document.getElementById("plantModal") || createModal();
+  // --- REWRITTEN FUNCTION for Side-by-Side Modals ---
+  function showDistrictDetails(district, plants) {
+    // Clear previous content
+    plantDetailsModal.innerHTML = '';
+    biomassDetailsModal.innerHTML = '';
 
+    // --- 1. Populate Plant Data Modal ---
     const sortedPlants = plants?.length
       ? [...plants].sort((a, b) =>
-          (a["Sponge Iron Plant"] || "").localeCompare(
-            b["Sponge Iron Plant"] || ""
-          )
+          (a["Sponge Iron Plant"] || "").localeCompare(b["Sponge Iron Plant"] || "")
         )
       : [];
 
-    const plantsTable =
-      sortedPlants.length > 0
-        ? sortedPlants
-            .map((plant) => {
-              const details = Object.entries(plant)
-                .filter(
-                  ([key, value]) => value && value !== "N/A" && value !== ""
-                )
-                .map(
-                  ([key, value]) => `
-                  <tr>
-                      <td class="key-column"><strong>${key}</strong></td>
-                      <td class="value-column">${value}</td>
-                  </tr>`
-                )
-                .join("");
-              return `
-              <div class="plant-entry">
-                  <h4 class="plant-name">${
-                    plant["Sponge Iron Plant"] || "Plant"
-                  }</h4>
-                  <table class="plant-details-table">
-                      ${details}
-                  </table>
-              </div>
-          `;
-            })
-            .join("")
-        : "<p>No plant data available for this district</p>";
+    const plantsTableHTML = sortedPlants.length > 0
+        ? sortedPlants.map((plant) => {
+            const details = Object.entries(plant)
+              .filter(([key, value]) => value && value !== "N/A" && value !== "")
+              .map(([key, value]) => `
+                <tr>
+                    <td class="key-column"><strong>${key}</strong></td>
+                    <td class="value-column">${value}</td>
+                </tr>`
+              ).join("");
+            return `
+            <div class="plant-entry">
+                <h4 class="plant-name">${plant["Sponge Iron Plant"] || "Plant"}</h4>
+                <table class="plant-details-table">
+                    ${details}
+                </table>
+            </div>`;
+          }).join("")
+        : "<p>No plant data available for this district.</p>";
+    
+    plantDetailsModal.innerHTML = `
+        <div class="side-modal-header"><h3>Plants in ${district}</h3></div>
+        <div class="side-modal-body">${plantsTableHTML}</div>
+    `;
 
+    // --- 2. Populate Biomass Data Modal (with loader) ---
+    biomassDetailsModal.innerHTML = `
+        <div class="side-modal-header"><h3>Biomass Data in ${district}</h3></div>
+        <div class="side-modal-body"><p>Loading biomass data...</p></div>
+    `;
+
+    // --- 3. Fetch and fill biomass data ---
     if (currentView === "Odisha") {
-      fetch(`/api/odisha/districts/${district.toLowerCase()}`)
-        .then((response) => response.json())
-        .then((biomassData) => {
-          const modalContent = `
-          <div class="modal-content">
-              <span class="close-modal">&times;</span>
-              <h2 class="district-title">${district} District Details</h2>
-              <div class="three-column-container">
-                  <div class="data-column plants-column">
-                      <h3>Plants in ${district}</h3>
-                      ${plantsTable}
-                  </div>
-                  <div class="data-column dri-plants-column">
-                      <h3>DRI Plants in ${district}</h3>
-                      ${plantsTable} 
-                  </div>
-                  <div class="data-column biomass-column">
-                      <h3>Biomass Data</h3>
-                      ${
-                        biomassData && biomassData.biomass
-                          ? `
-                          <div class="biomass-section">
-                              <h4>Bioenergy Potential (GJ)</h4>
-                              <table class="biomass-table">
-                                  ${Object.entries(
-                                    biomassData.biomass.bioenergy_potential
-                                  )
-                                    .map(
-                                      ([key, value]) => `
-                                          <tr>
-                                              <td>${key
-                                                .replace("_", " ")
-                                                .toUpperCase()}:</td>
-                                              <td>${
-                                                value?.toFixed(2) || "0.00"
-                                              }</td>
-                                          </tr>
-                                      `
-                                    )
-                                    .join("")}
-                              </table>
-                          </div>
-                          <div class="biomass-section">
-                              <h4>Gross Biomass (Kilo tonnes)</h4>
-                              <table class="biomass-table">
-                                  ${Object.entries(
-                                    biomassData.biomass.gross_biomass
-                                  )
-                                    .map(
-                                      ([key, value]) => `
-                                          <tr>
-                                              <td>${key
-                                                .replace("_", " ")
-                                                .toUpperCase()}:</td>
-                                              <td>${
-                                                value?.toFixed(2) || "0.00"
-                                              }</td>
-                                          </tr>
-                                      `
-                                    )
-                                    .join("")}
-                              </table>
-                          </div>
-                          <div class="biomass-section">
-                              <h4>Surplus Biomass (Kilo tonnes)</h4>
-                              <table class="biomass-table">
-                                  ${Object.entries(
-                                    biomassData.biomass.surplus__biomass
-                                  )
-                                    .map(
-                                      ([key, value]) => `
-                                          <tr>
-                                              <td>${key
-                                                .replace("_", " ")
-                                                .toUpperCase()}:</td>
-                                              <td>${
-                                                value?.toFixed(2) || "0.00"
-                                              }</td>
-                                          </tr>
-                                      `
-                                    )
-                                    .join("")}
-                              </table>
-                          </div>
-                      `
-                          : "<p>No biomass data available.</p>"
-                      }
-                  </div>
-              </div>
-          </div>`;
-
-          modal.innerHTML = modalContent;
-          modal.style.display = "block";
-          modal.querySelector('.close-modal').onclick = () => {
-                modal.style.display = 'none';
-          };
-        })
-        .catch((error) => {
-          console.error("Error fetching biomass data:", error);
-          showPlantOnlyDetails();
-        });
+        fetch(`/api/odisha/districts/${district.toLowerCase()}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Biomass data not found for this district.');
+                }
+                return response.json();
+            })
+            .then(biomassData => {
+                const biomassContent = (biomassData && biomassData.biomass)
+                    ? `
+                    <div class="biomass-section">
+                        <h4>Bioenergy Potential (GJ)</h4>
+                        <table class="biomass-table">
+                            ${Object.entries(biomassData.biomass.bioenergy_potential).map(([key, value]) => `
+                                <tr><td>${key.replace("_", " ").toUpperCase()}:</td><td>${value?.toFixed(2) || "0.00"}</td></tr>`
+                            ).join("")}
+                        </table>
+                    </div>
+                    <div class="biomass-section">
+                        <h4>Gross Biomass (Kilo tonnes)</h4>
+                        <table class="biomass-table">
+                            ${Object.entries(biomassData.biomass.gross_biomass).map(([key, value]) => `
+                                <tr><td>${key.replace("_", " ").toUpperCase()}:</td><td>${value?.toFixed(2) || "0.00"}</td></tr>`
+                            ).join("")}
+                        </table>
+                    </div>
+                    <div class="biomass-section">
+                        <h4>Surplus Biomass (Kilo tonnes)</h4>
+                        <table class="biomass-table">
+                            ${Object.entries(biomassData.biomass.surplus_biomass).map(([key, value]) => `
+                                <tr><td>${key.replace("_", " ").toUpperCase()}:</td><td>${value?.toFixed(2) || "0.00"}</td></tr>`
+                            ).join("")}
+                        </table>
+                    </div>
+                    `
+                    : "<p>No biomass data available.</p>";
+                
+                biomassDetailsModal.querySelector('.side-modal-body').innerHTML = biomassContent;
+            })
+            .catch(error => {
+                console.error("Error fetching biomass data:", error);
+                biomassDetailsModal.querySelector('.side-modal-body').innerHTML = `<p>${error.message}</p>`;
+            });
     } else {
-      showPlantOnlyDetails();
+        biomassDetailsModal.querySelector('.side-modal-body').innerHTML = '<p>Detailed biomass data is not available for this state.</p>';
     }
 
-    function showPlantOnlyDetails() {
-      const content = `
-          <div class="modal-content">
-              <span class="close-modal">&times;</span>
-              <h3>${
-                isAllPlants ? "All Plants in State" : `Plants in ${district}`
-              }</h3>
-              <div class="district-plants">
-                  ${plantsTable}
-              </div>
-          </div>`;
-      modal.innerHTML = content;
-      modal.style.display = "block";
-      modal.querySelector('.close-modal').onclick = () => {
-            modal.style.display = 'none';
-      };
-    }
+    // --- 4. Show the main container ---
+    detailsModalContainer.style.display = 'flex';
   }
 
   function createModal() {

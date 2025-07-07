@@ -201,9 +201,9 @@ textarea:focus {
 }
 
 .sidebar-section {
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-md);
     background: var(--glass-bg);
-    padding: var(--space-lg);
+    padding: var(--space-md);
     border-radius: var(--radius-lg);
     border: 1px solid var(--glass-border);
     position: relative;
@@ -251,7 +251,7 @@ textarea:focus {
     font-weight: 500;
     width: 100%;
     text-align: left;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
@@ -270,6 +270,17 @@ textarea:focus {
     transform: translateY(0);
     box-shadow: var(--shadow-md);
 }
+
+.sidebar-button:disabled,
+.sidebar-button:disabled:hover {
+    background: rgba(222, 226, 230, 0.5);
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #dee2e6;
+    transform: none;
+    box-shadow: none;
+}
+
 
 .sidebar-button.primary {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
@@ -678,38 +689,39 @@ textarea:focus {
 /* 7. ENHANCED TABLES & LISTS
 /* =================================================================== */
 
-.state-list-container {
-    position: absolute;
-    bottom: var(--space-lg);
-    right: var(--space-lg);
-    z-index: 1000;
-    max-height: 420px;
-    max-width: 320px;
-    overflow-y: auto;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    padding: var(--space-md);
-    margin: 0;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    backdrop-filter: blur(20px);
-    display: none;
+.state-biomass-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    border-bottom: 1px solid #eee;
 }
+
+.state-biomass-button .view-details-btn {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 16px;
     margin: 0;
-    background-color: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
+}
+
+.plant-details-table, .biomass-table {
+    margin-bottom: var(--space-lg);
 }
 
 th, td {
     text-align: left;
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-bottom: 1px solid #e2e8f0;
     vertical-align: middle;
     transition: background-color var(--transition-normal);
@@ -726,43 +738,19 @@ th {
     position: relative;
 }
 
-th::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
-}
-
 td:first-child, th:first-child {
     text-align: left;
     font-weight: 600;
 }
 
-tr:first-child th:first-child {
-    border-top-left-radius: var(--radius-md);
-}
-
-tr:first-child th:last-child {
-    border-top-right-radius: var(--radius-md);
-}
-
 tr:nth-child(even) {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: #f8fafc;
 }
 
 tr:hover {
-    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
+    background: #f1f5f9;
 }
 
-tr td:first-child {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-    border-left: 3px solid var(--accent-blue);
-}
 
 /* =================================================================== */
 /* 8. ENHANCED OVERLAYS & LEGENDS
@@ -802,7 +790,7 @@ tr td:first-child {
 
 #bottom-right-overlays {
     position: absolute;
-    bottom: var(--space-lg);
+    bottom: 80px;
     right: var(--space-lg);
     z-index: 998;
     display: flex;
@@ -939,75 +927,133 @@ tr td:first-child {
 }
 
 /* =================================================================== */
-/* 10. BIOMASS DETAILS CONTAINER
+/* 10. SIDE-BY-SIDE & DISTRICT MODAL STYLES
 /* =================================================================== */
 
-#biomass-details-container {
+.details-modal-container {
+    display: none; /* Hidden by default */
     position: fixed;
-    top: 0;
+    z-index: 10000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 10000;
-    display: none;
-    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.6);
     padding: var(--space-lg);
     backdrop-filter: blur(8px);
     animation: fadeIn var(--transition-normal) ease-out;
+    
+    /* Flexbox for side-by-side layout */
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-lg);
 }
 
-#biomass-details-container .biomass-content {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    margin: 2vh auto;
-    padding: var(--space-xl);
-    border-radius: var(--radius-xl);
-    width: 95%;
-    max-width: 1200px;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: slideInUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+.side-modal {
+    background: var(--bg-secondary);
+    width: 45%;
+    max-width: 650px;
+    height: 85vh;
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideInUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-#biomass-details-container h2 {
+.side-modal-header {
+    padding: var(--space-md);
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8f9fa;
+}
+
+.side-modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
     color: var(--text-primary);
-    margin: 0 0 var(--space-xl) 0;
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-align: center;
 }
 
-#biomass-details-container .close-biomass {
+.side-modal-body {
+    padding: var(--space-md);
+    overflow-y: auto;
+    flex-grow: 1; /* Allows body to fill remaining space */
+}
+
+.close-details-btn {
     position: absolute;
     top: 20px;
     right: 30px;
-    font-size: 32px;
-    font-weight: bold;
-    color: var(--text-muted);
+    font-size: 40px;
+    font-weight: 300;
+    color: white;
     cursor: pointer;
+    background: none;
+    border: none;
     line-height: 1;
-    transition: all var(--transition-normal);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(248, 250, 252, 0.8);
+    transition: transform var(--transition-normal);
 }
 
-#biomass-details-container .close-biomass:hover {
-    color: var(--accent-red);
-    background: rgba(239, 68, 68, 0.1);
-    transform: rotate(90deg) scale(1.1);
+.close-details-btn:hover {
+    transform: scale(1.1);
 }
+
+
+/* Adjustments for Plant/Biomass Tables in new modals */
+.plant-entry {
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    overflow: hidden;
+}
+.plant-name {
+    margin: 0;
+    padding: var(--space-sm) var(--space-md);
+    background: #f1f5f9;
+    font-size: 1rem;
+}
+.plant-details-table {
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
+}
+.plant-details-table .key-column {
+    width: 40%;
+}
+
+.biomass-section h4 {
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+/* Mobile responsive for side-by-side modals */
+@media screen and (max-width: 1023px) {
+    .details-modal-container {
+        flex-direction: column;
+        padding: var(--space-md);
+        gap: var(--space-md);
+    }
+    .side-modal {
+        width: 100%;
+        height: 45vh;
+        max-width: none;
+    }
+    .close-details-btn {
+        top: 5px;
+        right: 15px;
+        color: var(--text-primary);
+        background: rgba(255,255,255,0.5);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 32px;
+    }
+}
+
 
 /* =================================================================== */
 /* 11. ENHANCED ANIMATIONS & MICRO-INTERACTIONS
